@@ -12,48 +12,30 @@
 // Initialize DHT sensor.
 DHT dht(DHTPIN, DHTTYPE);
 DS1302RTC RTC(5, 6, 7);
+int i = 0;
 
 void setup() {
   Serial.begin(9600);
 
-  uhrzeit_s();
-
+  setSyncProvider(RTC.get);
   
   dht.begin();
 }
 
 void loop() {
-    gassensor_v();
-  dtv_v();
-  uhrzeit_v();
-
-}
-
-void gassensor_v ()
-{
-int sensorValue = analogRead(A0);
-
-    Serial.print("Gassensor: ");
-    Serial.println(sensorValue);
+    int sensorValue = analogRead(A0);
+    char buffer [100];
+    i=sprintf(buffer,"Gassensor: %d",char(sensorValue));
+    for(int l=0;l<=i;l++)
+     {
+    Serial.print(buffer[l]);
+     }
+    Serial.print("\n");
     
-}
-
-void dtv_v ()
-{
-    // Wait a few seconds between measurements.
-  delay(2000);
-  
-
   // Read relative humidity in percent
   float h = dht.readHumidity();
   // Read temperature in degree Celsius
   float t = dht.readTemperature();
-
-  // Check if any reads failed and exit early (to try again).
-  if (isnan(h) || isnan(t)) {
-    Serial.println("Es tut mir leid aber ihr seid zu eingeschraengt mich richtig zu verkabeln!!!");
-    return;
-  }
 
   // Compute saturation vapor pressure
   // https://en.wikipedia.org/wiki/Clausius-Clapeyron_relation
@@ -66,70 +48,54 @@ void dtv_v ()
   // http://planetcalc.com/2167/
   float af = (e*100)/(461.52*(t+273.15))*1000.;
 
-  Serial.print("Messungen::\t");
   Serial.print("Relative Feuchtigkeit: ");
   Serial.print(h);
-  Serial.print(" %\t");
+  Serial.println(" %");
+  
   Serial.print("Temperatur: ");
   Serial.print(t);
   Serial.println(" *C");
 
-  Serial.print("Kalkulation::\t");
-  Serial.print("saettigungsdampfdruck: ");
+  Serial.print("Saettigungsdampfdruck: ");
   Serial.print(es);
-  Serial.print(" hPa\t");
+  Serial.println(" hPa");
+  
   Serial.print("Luftdruck: ");
   Serial.print(e);
-  Serial.print(" hPa\t");
+  Serial.println(" hPa");
+  
   Serial.print("absulute Feuchtigkeit: ");
   Serial.print(af);
   Serial.println(" g/m^3");
 
-}
+//  Serial.print("hour: ");
+//  Serial.println(hour());
 
-void uhrzeit_s ()
-{
-    delay(500);
+//  Serial.print("minute: ");
+//  Serial.println(minute());
 
-  // Check clock oscillation  
+//  Serial.print("second: ");
+//  Serial.println(second());
 
-  setSyncProvider(RTC.get); // the function to get the time from the RTC
-  
-   
-  delay (2000);
-
-  setSyncProvider(RTC.get); // the function to get the time from the RTC
-
- 
-  Serial.begin(9600);
-  delay(1000);
-  Serial.print("DS1302RTC");
-  Serial.println(" test!");
-}
-
-void uhrzeit_v ()
-{
-   // Display time centered on the upper line
-  Serial.print("hour: ");
-  Serial.print(hour());
-  Serial.print("\n");
-  Serial.print("minute: ");
-  Serial.print(minute());
-  Serial.print("\n");
-  Serial.print("second: ");
-  Serial.print(second());
-  Serial.print("\n");
   Serial.print("weekday: ");
-  Serial.print(dayShortStr(weekday()));
-  Serial.print("\n");
+  Serial.println(dayShortStr(weekday()));
+
   Serial.print("day: ");
-  Serial.print(day());
-  Serial.print("\n");
+  Serial.println(day());
+
   Serial.print("month: ");
-  Serial.print(month());
-  Serial.print("\n");
+  Serial.println(month());
+
+  Serial.print("year: ");
+  Serial.println(year());
 
   delay ( 1000 ); // Wait approx 1 sec
+
 }
+
+
+
+
+
 
 
