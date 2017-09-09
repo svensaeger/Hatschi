@@ -9,7 +9,7 @@ def ausgeben(daten):
 root = Tk()
 root.attributes("-fullscreen", True)
 root.config(bg = "light green")
-frameo = Frame(root)
+frameo = Frame(root)    
 frameu = Frame(root, bg = "light green")
 
 
