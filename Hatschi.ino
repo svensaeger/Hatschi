@@ -32,14 +32,10 @@ void loop() {
 void gassensor_v ()
 {
 int sensorValue = analogRead(A0);
-if (sensorValue >=150){
+
+    Serial.print("Gassensor: ");
     Serial.println(sensorValue);
-    Serial.println("musst schon doof sein, wenn du jetzt raus gehst");
-  }
-  else {
-    Serial.println(sensorValue);
-    Serial.println("wenns unbedingt sein muss kannst du jetzt raus gehen");
-  }  
+    
 }
 
 void dtv_v ()
