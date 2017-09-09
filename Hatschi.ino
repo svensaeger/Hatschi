@@ -1,4 +1,6 @@
 #include "DHT.h"
+#include "DS1302RTC.h"
+#include "Time.h"
 
 #define DHTPIN 2     // what pin we're connected to
 
@@ -9,20 +11,42 @@
 
 // Initialize DHT sensor.
 DHT dht(DHTPIN, DHTTYPE);
+DS1302RTC RTC(5, 6, 7);
 
 void setup() {
   Serial.begin(9600);
-  delay(1000);
-  Serial.print("DHT");
-  Serial.print(DHTTYPE);
-  Serial.println(" test!");
 
+  uhrzeit_s();
+
+  
   dht.begin();
 }
 
 void loop() {
-  // Wait a few seconds between measurements.
+    gassensor_v();
+  dtv_v();
+  uhrzeit_v();
+
+}
+
+void gassensor_v ()
+{
+int sensorValue = analogRead(A0);
+if (sensorValue >=150){
+    Serial.println(sensorValue);
+    Serial.println("musst schon doof sein, wenn du jetzt raus gehst");
+  }
+  else {
+    Serial.println(sensorValue);
+    Serial.println("wenns unbedingt sein muss kannst du jetzt raus gehen");
+  }  
+}
+
+void dtv_v ()
+{
+    // Wait a few seconds between measurements.
   delay(2000);
+  
 
   // Read relative humidity in percent
   float h = dht.readHumidity();
@@ -64,7 +88,52 @@ void loop() {
   Serial.print("absulute Feuchtigkeit: ");
   Serial.print(af);
   Serial.println(" g/m^3");
+
 }
 
+void uhrzeit_s ()
+{
+    delay(500);
+
+  // Check clock oscillation  
+
+  setSyncProvider(RTC.get); // the function to get the time from the RTC
+  
+   
+  delay (2000);
+
+  setSyncProvider(RTC.get); // the function to get the time from the RTC
+
+ 
+  Serial.begin(9600);
+  delay(1000);
+  Serial.print("DS1302RTC");
+  Serial.println(" test!");
+}
+
+void uhrzeit_v ()
+{
+   // Display time centered on the upper line
+  Serial.print("hour: ");
+  Serial.print(hour());
+  Serial.print("\n");
+  Serial.print("minute: ");
+  Serial.print(minute());
+  Serial.print("\n");
+  Serial.print("second: ");
+  Serial.print(second());
+  Serial.print("\n");
+  Serial.print("weekday: ");
+  Serial.print(dayShortStr(weekday()));
+  Serial.print("\n");
+  Serial.print("day: ");
+  Serial.print(day());
+  Serial.print("\n");
+  Serial.print("month: ");
+  Serial.print(month());
+  Serial.print("\n");
+
+  delay ( 1000 ); // Wait approx 1 sec
+}
 
 
