@@ -1,2 +1,3 @@
 # Hatschi
-Hatschi ist irgendwas mit Wetter
+Irgendwas mit Wetter
+Entstanden bei Jugend Hackt Köln 2017
