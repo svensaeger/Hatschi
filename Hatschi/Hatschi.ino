@@ -14,10 +14,19 @@ DHT dht(DHTPIN, DHTTYPE);
 DS1302RTC RTC(5, 6, 7);
 int i = 0;
 
-void versenden(int temp, int luftf, int luftdruck, int af) {
-  char buffer[1024];
-  snprintf(buffer, sizeof(buffer), "{'temp':'%d°C','luftf':'%d%','luftd':'%dhPa','af':'%dg/m^3'}", temp, luftf, luftdruck, af);
-  Serial.println(buffer);
+void versenden(int temp, int luftf, int luftdruck, int af, int gas) {
+  Serial.print("{'temp':'");
+  Serial.print(temp);
+  Serial.print("','luftf':'");
+  Serial.print(luftf);
+  Serial.print("','luftd':'");
+  Serial.print(luftdruck);
+  Serial.print("','af':'");
+  Serial.print(af);
+  Serial.print("','gas':'");
+  Serial.print(gas);
+  Serial.println("'}");
+  //Serial.println("{'temp':'23','luftf':'47','luftd':'23','af':'23'}");
 }
 
 void setup() {
@@ -85,9 +94,9 @@ void loop() {
 //  Serial.print("second: ");
 //  Serial.println(second());
 
-  versenden(t, h, e, af);
+  versenden(t, h, e, af, analogRead(A0));
 
-  delay ( 1000 ); // Wait approx 1 sec
+  delay ( 200 ); // Wait approx 1 sec
 }
 
 
