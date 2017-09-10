@@ -16,7 +16,7 @@ int i = 0;
 
 void versenden(int temp, int luftf, int luftdruck, int af) {
   char buffer[1024];
-  snprintf(buffer, sizeof(buffer), "{'temp':'%d','luftf':'%d','luftd':'%d','af':'%d'}", temp, luftf, luftdruck, af);
+  snprintf(buffer, sizeof(buffer), "{'temp':'%d°C','luftf':'%d%','luftd':'%dhPa','af':'%dg/m^3'}", temp, luftf, luftdruck, af);
   Serial.println(buffer);
 }
 
@@ -85,9 +85,9 @@ void loop() {
 //  Serial.print("second: ");
 //  Serial.println(second());
 
-  delay ( 1000 ); // Wait approx 1 sec
-
   versenden(t, h, e, af);
+
+  delay ( 1000 ); // Wait approx 1 sec
 }
 
 
