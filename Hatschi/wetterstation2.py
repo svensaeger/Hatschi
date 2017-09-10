@@ -23,6 +23,9 @@ def ausgeben(daten):
     timeS.set(time.strftime("%H:%M:%S", time.gmtime()))
     root.update_idletasks()
 
+def geigerausgeben(gcv):
+    gc.set("Geigerzähler: "+str(gcv))
+
 root = Tk()
 root.attributes("-fullscreen", True)
 root.config(bg = "dark grey")
@@ -40,9 +43,8 @@ gas = StringVar()
 gas.set("")
 timeS = StringVar()
 timeS.set("")
-
-
-
+gc = StringVar()
+gc.set("")
 
 Label(frameo, 
              text="Hatschi",
@@ -80,6 +82,12 @@ Label(frameu,
              bg = "dark grey",
              font = "Times 50").pack()
 
+Label(frameu, 
+             textvariable=gc,
+             fg = "black",
+             bg = "dark grey",
+             font = "Times 50").pack()
+
 Label(frameu,
       textvariable=timeS,
       fg = "black",
@@ -91,18 +99,25 @@ frameu.pack(pady = 20)
 root.update()
 
 s = serial.Serial('/dev/ttyACM0', 9600)
+gcs = serial.Serial('/dev/ttyUSB0', 9600)
 try:
     s.open()
+    gcs.open()
 except serial.serialutil.SerialException:
     s.close()
     s.open()
-time.sleep(5)
+    gcs.close()
+    gcs.open()
+time.sleep(2)
+geigercounter = 0
 try:
     while True:
         try:
             line = s.readline().decode("ascii")
-            
+            if gcs.inWaiting():
+                geigercounter += int(gcs.read(1).decode("ascii"))
             ausgeben(line)
+            geigerausgeben(geigercounter)
         except UnicodeDecodeError:
             print("Error")
 except KeyboardInterrupt:
